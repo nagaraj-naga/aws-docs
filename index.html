@@ -3,50 +3,441 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWS Docs</title>
+    <title>AWS Docs — Learning Reference</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['DM Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        aws: {
+                            orange: '#FF9900',
+                            'orange-light': '#FFAC31',
+                            dark: '#232F3E',
+                            darker: '#161E2D',
+                            darkest: '#0F1620',
+                            navy: '#1B2A4A',
+                            slate: '#2A3F5F',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0f1b2d;
-            color: #e8eaed;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        html { scroll-behavior: smooth; }
+        body { font-family: 'DM Sans', sans-serif; }
+        .gradient-border { background: linear-gradient(135deg, #FF9900 0%, #FFAC31 50%, #FF9900 100%); }
+        .card-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255,153,0,0.08); }
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; width: 0;
+            height: 2px; background: #FF9900; transition: width 0.2s ease;
         }
-        .container {
-            text-align: center;
-            padding: 2rem;
-        }
-        h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #ff9900, #ffb84d);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-        }
-        p {
-            font-size: 1.1rem;
-            color: #8899aa;
-            margin-bottom: 2rem;
-        }
-        .badge {
-            display: inline-block;
-            background: rgba(255, 153, 0, 0.15);
-            border: 1px solid rgba(255, 153, 0, 0.3);
-            padding: 0.5rem 1.5rem;
-            border-radius: 2rem;
-            font-size: 0.9rem;
-            color: #ff9900;
-        }
+        .nav-link:hover::after { width: 100%; }
+        .topic-card { border-left: 3px solid transparent; transition: border-color 0.2s ease; }
+        .topic-card:hover { border-left-color: #FF9900; }
+        .sidebar-link.active { color: #FF9900; border-right: 2px solid #FF9900; }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>AWS Docs</h1>
-        <p>AWS learning documentation &amp; reference site</p>
-        <span class="badge">Auto-deployed via Netlify + GitHub</span>
+<body class="bg-aws-darkest text-gray-200 antialiased">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-aws-darker/95 backdrop-blur-sm border-b border-gray-800/50 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg gradient-border flex items-center justify-center">
+                    <svg class="w-5 h-5 text-aws-darkest" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <span class="text-lg font-bold text-white tracking-tight">AWS<span class="text-aws-orange">Docs</span></span>
+                <span class="text-xs font-mono text-gray-500 ml-2 hidden sm:inline">v1.0</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#services" class="nav-link text-sm text-gray-400 hover:text-white transition-colors">Services</a>
+                <a href="#paths" class="nav-link text-sm text-gray-400 hover:text-white transition-colors">Learning Paths</a>
+                <a href="#resources" class="nav-link text-sm text-gray-400 hover:text-white transition-colors">Resources</a>
+                <a href="#certs" class="nav-link text-sm text-gray-400 hover:text-white transition-colors">Certifications</a>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="hidden sm:flex items-center bg-aws-dark rounded-lg px-3 py-1.5 border border-gray-700/50">
+                    <svg class="w-4 h-4 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <span class="text-sm text-gray-500">Search docs...</span>
+                    <kbd class="ml-4 text-xs text-gray-600 font-mono bg-gray-800 px-1.5 py-0.5 rounded">⌘K</kbd>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="pt-32 pb-20 px-6 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle at 1px 1px, #FF9900 1px, transparent 0); background-size: 40px 40px;"></div>
+        <div class="max-w-4xl mx-auto text-center relative">
+            <div class="inline-flex items-center gap-2 bg-aws-dark/80 border border-gray-700/50 rounded-full px-4 py-1.5 mb-6">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span class="text-xs font-medium text-gray-400">Actively maintained · Last updated March 2026</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+                AWS Learning<br>
+                <span class="text-aws-orange">Documentation</span>
+            </h1>
+            <p class="text-lg text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+                A structured reference for AWS services, architecture patterns, and certification prep. Built for developers who learn by doing.
+            </p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="#services" class="inline-flex items-center gap-2 bg-aws-orange hover:bg-aws-orange-light text-aws-darkest font-semibold px-6 py-3 rounded-lg transition-colors text-sm">
+                    Explore Services
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </a>
+                <a href="#paths" class="inline-flex items-center gap-2 bg-aws-dark border border-gray-700 hover:border-gray-600 text-white font-medium px-6 py-3 rounded-lg transition-colors text-sm">
+                    Learning Paths
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stats Bar -->
+    <div class="border-y border-gray-800/50 bg-aws-darker/50">
+        <div class="max-w-7xl mx-auto px-6 py-6 grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="text-center">
+                <div class="text-2xl font-bold text-white">200+</div>
+                <div class="text-xs text-gray-500 mt-1">AWS Services</div>
+            </div>
+            <div class="text-center">
+                <div class="text-2xl font-bold text-white">12</div>
+                <div class="text-xs text-gray-500 mt-1">Certifications</div>
+            </div>
+            <div class="text-center">
+                <div class="text-2xl font-bold text-white">5</div>
+                <div class="text-xs text-gray-500 mt-1">Learning Paths</div>
+            </div>
+            <div class="text-center">
+                <div class="text-2xl font-bold text-white">33</div>
+                <div class="text-xs text-gray-500 mt-1">Regions</div>
+            </div>
+        </div>
     </div>
+
+    <!-- Core Services -->
+    <section id="services" class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-12">
+                <span class="text-xs font-mono text-aws-orange tracking-widest uppercase">Core Services</span>
+                <h2 class="text-3xl font-bold text-white mt-2">Service Categories</h2>
+                <p class="text-gray-500 mt-2 max-w-xl">Essential AWS services organized by domain. Each category covers key concepts, best practices, and exam-relevant notes.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Compute -->
+                <div class="topic-card card-hover bg-aws-darker border border-gray-800/50 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-aws-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2"/></svg>
+                        </div>
+                        <h3 class="text-white font-semibold">Compute</h3>
+                    </div>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-aws-orange"></span>EC2 — Instances, AMIs, Placement Groups</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-aws-orange"></span>Lambda — Serverless, Limits, Layers</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-aws-orange"></span>ECS / EKS — Containers, Fargate</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-aws-orange"></span>Elastic Beanstalk — Deployments</li>
+                    </ul>
+                    <div class="mt-4 pt-4 border-t border-gray-800/50">
+                        <span class="text-xs font-mono text-gray-600">12 topics · 45 notes</span>
+                    </div>
+                </div>
+
+                <!-- Storage -->
+                <div class="topic-card card-hover bg-aws-darker border border-gray-800/50 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
+                        </div>
+                        <h3 class="text-white font-semibold">Storage</h3>
+                    </div>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-blue-400"></span>S3 — Buckets, Versioning, Lifecycle</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-blue-400"></span>EBS — Volume Types, Snapshots</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-blue-400"></span>EFS — Elastic File System</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-blue-400"></span>S3 Glacier — Archive Storage</li>
+                    </ul>
+                    <div class="mt-4 pt-4 border-t border-gray-800/50">
+                        <span class="text-xs font-mono text-gray-600">10 topics · 38 notes</span>
+                    </div>
+                </div>
+
+                <!-- Networking -->
+                <div class="topic-card card-hover bg-aws-darker border border-gray-800/50 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/></svg>
+                        </div>
+                        <h3 class="text-white font-semibold">Networking</h3>
+                    </div>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-emerald-400"></span>VPC — Subnets, Route Tables, NACLs</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-emerald-400"></span>Route 53 — DNS, Routing Policies</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-emerald-400"></span>CloudFront — CDN, Edge Locations</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-emerald-400"></span>Global Accelerator — Anycast IPs</li>
+                    </ul>
+                    <div class="mt-4 pt-4 border-t border-gray-800/50">
+                        <span class="text-xs font-mono text-gray-600">11 topics · 42 notes</span>
+                    </div>
+                </div>
+
+                <!-- Database -->
+                <div class="topic-card card-hover bg-aws-darker border border-gray-800/50 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+                        </div>
+                        <h3 class="text-white font-semibold">Database</h3>
+                    </div>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-purple-400"></span>RDS — Multi-AZ, Read Replicas</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-purple-400"></span>Aurora — Serverless, Global DB</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-purple-400"></span>DynamoDB — Partitions, GSI/LSI</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-purple-400"></span>ElastiCache — Redis vs Memcached</li>
+                    </ul>
+                    <div class="mt-4 pt-4 border-t border-gray-800/50">
+                        <span class="text-xs font-mono text-gray-600">9 topics · 35 notes</span>
+                    </div>
+                </div>
+
+                <!-- Security -->
+                <div class="topic-card card-hover bg-aws-darker border border-gray-800/50 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                        </div>
+                        <h3 class="text-white font-semibold">Security & Identity</h3>
+                    </div>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-red-400"></span>IAM — Policies, Roles, Federation</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-red-400"></span>KMS — Encryption, Key Rotation</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-red-400"></span>GuardDuty / Inspector / Macie</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-red-400"></span>WAF & Shield — DDoS Protection</li>
+                    </ul>
+                    <div class="mt-4 pt-4 border-t border-gray-800/50">
+                        <span class="text-xs font-mono text-gray-600">14 topics · 50 notes</span>
+                    </div>
+                </div>
+
+                <!-- DevOps -->
+                <div class="topic-card card-hover bg-aws-darker border border-gray-800/50 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        </div>
+                        <h3 class="text-white font-semibold">DevOps & CI/CD</h3>
+                    </div>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-cyan-400"></span>CodePipeline / CodeBuild / CodeDeploy</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-cyan-400"></span>CloudFormation — IaC Templates</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-cyan-400"></span>CloudWatch — Metrics, Alarms, Logs</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-cyan-400"></span>X-Ray — Distributed Tracing</li>
+                    </ul>
+                    <div class="mt-4 pt-4 border-t border-gray-800/50">
+                        <span class="text-xs font-mono text-gray-600">10 topics · 40 notes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Learning Paths -->
+    <section id="paths" class="py-20 px-6 bg-aws-darker/30">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-12">
+                <span class="text-xs font-mono text-aws-orange tracking-widest uppercase">Guided Learning</span>
+                <h2 class="text-3xl font-bold text-white mt-2">Learning Paths</h2>
+                <p class="text-gray-500 mt-2 max-w-xl">Structured study tracks aligned to AWS certification exams and real-world architecture skills.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <!-- Path 1 -->
+                <div class="card-hover bg-aws-darkest border border-gray-800/50 rounded-xl p-6 flex gap-5">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-aws-orange/20 to-aws-orange/5 flex items-center justify-center text-aws-orange font-bold text-lg">01</div>
+                    <div>
+                        <h3 class="text-white font-semibold mb-1">Solutions Architect — Associate</h3>
+                        <p class="text-sm text-gray-500 mb-3">Design resilient, high-performing, secure, and cost-optimized architectures on AWS.</p>
+                        <div class="flex items-center gap-4 text-xs text-gray-600">
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                ~60 hours
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                65 questions
+                            </span>
+                            <span class="px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-500 font-medium">Intermediate</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Path 2 -->
+                <div class="card-hover bg-aws-darkest border border-gray-800/50 rounded-xl p-6 flex gap-5">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-500/5 flex items-center justify-center text-blue-400 font-bold text-lg">02</div>
+                    <div>
+                        <h3 class="text-white font-semibold mb-1">Developer — Associate</h3>
+                        <p class="text-sm text-gray-500 mb-3">Develop, deploy, and debug cloud-based applications using AWS SDKs and CI/CD.</p>
+                        <div class="flex items-center gap-4 text-xs text-gray-600">
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                ~50 hours
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                65 questions
+                            </span>
+                            <span class="px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-500 font-medium">Intermediate</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Path 3 -->
+                <div class="card-hover bg-aws-darkest border border-gray-800/50 rounded-xl p-6 flex gap-5">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 flex items-center justify-center text-emerald-400 font-bold text-lg">03</div>
+                    <div>
+                        <h3 class="text-white font-semibold mb-1">Cloud Practitioner</h3>
+                        <p class="text-sm text-gray-500 mb-3">Foundational understanding of AWS Cloud, services, pricing, and support models.</p>
+                        <div class="flex items-center gap-4 text-xs text-gray-600">
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                ~30 hours
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                65 questions
+                            </span>
+                            <span class="px-2 py-0.5 rounded-full bg-green-500/10 text-green-500 font-medium">Beginner</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Path 4 -->
+                <div class="card-hover bg-aws-darkest border border-gray-800/50 rounded-xl p-6 flex gap-5">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/20 to-red-500/5 flex items-center justify-center text-red-400 font-bold text-lg">04</div>
+                    <div>
+                        <h3 class="text-white font-semibold mb-1">Solutions Architect — Professional</h3>
+                        <p class="text-sm text-gray-500 mb-3">Advanced architectural design, migration strategies, and cost-control patterns.</p>
+                        <div class="flex items-center gap-4 text-xs text-gray-600">
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                ~100 hours
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                75 questions
+                            </span>
+                            <span class="px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 font-medium">Advanced</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Reference -->
+    <section id="resources" class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-12">
+                <span class="text-xs font-mono text-aws-orange tracking-widest uppercase">Quick Reference</span>
+                <h2 class="text-3xl font-bold text-white mt-2">Cheat Sheets & Resources</h2>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="card-hover bg-aws-darker border border-gray-800/50 rounded-xl p-5">
+                    <div class="text-aws-orange font-mono text-sm mb-2">01</div>
+                    <h4 class="text-white font-semibold text-sm mb-1">IAM Policy Reference</h4>
+                    <p class="text-xs text-gray-500">Actions, resources, conditions, and policy evaluation logic.</p>
+                </div>
+                <div class="card-hover bg-aws-darker border border-gray-800/50 rounded-xl p-5">
+                    <div class="text-blue-400 font-mono text-sm mb-2">02</div>
+                    <h4 class="text-white font-semibold text-sm mb-1">S3 Storage Classes</h4>
+                    <p class="text-xs text-gray-500">Comparison of Standard, IA, Glacier, and Deep Archive tiers.</p>
+                </div>
+                <div class="card-hover bg-aws-darker border border-gray-800/50 rounded-xl p-5">
+                    <div class="text-emerald-400 font-mono text-sm mb-2">03</div>
+                    <h4 class="text-white font-semibold text-sm mb-1">VPC Architecture</h4>
+                    <p class="text-xs text-gray-500">Subnets, NAT, endpoints, peering, and transit gateway patterns.</p>
+                </div>
+                <div class="card-hover bg-aws-darker border border-gray-800/50 rounded-xl p-5">
+                    <div class="text-purple-400 font-mono text-sm mb-2">04</div>
+                    <h4 class="text-white font-semibold text-sm mb-1">Lambda Limits</h4>
+                    <p class="text-xs text-gray-500">Memory, timeout, payload, concurrency, and deployment limits.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications -->
+    <section id="certs" class="py-20 px-6 bg-aws-darker/30">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-12">
+                <span class="text-xs font-mono text-aws-orange tracking-widest uppercase">Exam Prep</span>
+                <h2 class="text-3xl font-bold text-white mt-2">Certification Tracks</h2>
+            </div>
+
+            <div class="grid sm:grid-cols-3 gap-4">
+                <div class="text-center p-8 rounded-xl border border-gray-800/50 bg-aws-darkest">
+                    <div class="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
+                        <span class="text-green-400 font-bold text-xl">F</span>
+                    </div>
+                    <h4 class="text-white font-semibold mb-1">Foundational</h4>
+                    <p class="text-xs text-gray-500 mb-3">Cloud Practitioner, AI Practitioner</p>
+                    <span class="text-xs font-mono text-gray-600">No prerequisite</span>
+                </div>
+                <div class="text-center p-8 rounded-xl border border-gray-800/50 bg-aws-darkest">
+                    <div class="w-16 h-16 rounded-full bg-yellow-500/10 flex items-center justify-center mx-auto mb-4">
+                        <span class="text-yellow-400 font-bold text-xl">A</span>
+                    </div>
+                    <h4 class="text-white font-semibold mb-1">Associate</h4>
+                    <p class="text-xs text-gray-500 mb-3">SAA, Developer, SysOps</p>
+                    <span class="text-xs font-mono text-gray-600">1+ year experience</span>
+                </div>
+                <div class="text-center p-8 rounded-xl border border-gray-800/50 bg-aws-darkest">
+                    <div class="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
+                        <span class="text-red-400 font-bold text-xl">P</span>
+                    </div>
+                    <h4 class="text-white font-semibold mb-1">Professional</h4>
+                    <p class="text-xs text-gray-500 mb-3">SA Pro, DevOps Engineer</p>
+                    <span class="text-xs font-mono text-gray-600">2+ years experience</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800/50 py-12 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-6 h-6 rounded gradient-border flex items-center justify-center">
+                    <svg class="w-3.5 h-3.5 text-aws-darkest" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <span class="text-sm text-gray-500">AWS<span class="text-gray-400">Docs</span> — Personal learning reference</span>
+            </div>
+            <div class="flex items-center gap-6 text-xs text-gray-600">
+                <span>Built with Tailwind CSS</span>
+                <span>•</span>
+                <span>Auto-deployed via Netlify</span>
+                <span>•</span>
+                <span>March 2026</span>
+            </div>
+        </div>
+    </footer>
+
 </body>
 </html>
